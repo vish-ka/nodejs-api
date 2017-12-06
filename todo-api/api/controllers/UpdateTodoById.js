@@ -1,13 +1,15 @@
 'use strict';
 
 var client = require('../helpers/es');
+var monitor = require('../helpers/monitor');
 
 module.exports = {
     UpdateTodoById: UpdateTodoById
 }
 
 function UpdateTodoById(req, res) {
-    console.log('Updating Todo with id ${req.swagger.params.id.value}');
+    var start = monitor();
+    console.log(`Updating Todo with id ${req.swagger.params.id.value}`);
     client.update({
         index: 'todo',
         type: 'todo',
@@ -22,6 +24,7 @@ function UpdateTodoById(req, res) {
             res.end(JSON.stringify(error));
         } else {
             res.end();
+            monitor(start, 'UpdateTodoById');
         }
     })
 }

@@ -1,13 +1,15 @@
 'use strict';
 
 var client = require('../helpers/es');
+var monitor = require('../helpers/monitor');
 
 module.exports = {
     FindTodoById: FindTodoById
 }
 
 function FindTodoById(req, res) {
-    console.log('Getting Todo with id ${req.swagger.params.id.value}');
+    var start = monitor();
+    console.log(`Getting Todo with id ${req.swagger.params.id.value}`);
     client.get({
         index: 'todo',
         type: 'todo',
@@ -18,6 +20,7 @@ function FindTodoById(req, res) {
             res.end(JSON.stringify(error));
         } else {
             res.end(JSON.stringify(response._source));
+            monitor(start, 'FindTodoById');
         }
     })
 }

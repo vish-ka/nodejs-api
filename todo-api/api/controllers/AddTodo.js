@@ -1,12 +1,14 @@
 'use strict';
 
 var client = require('../helpers/es');
+var monitor = require('../helpers/monitor');
 
 module.exports = {
     AddTodo: AddTodo
 }
 
 function AddTodo(req, res) {
+    var start = monitor();
     client.create({
         index: 'todo',
         type: 'todo',
@@ -19,7 +21,8 @@ function AddTodo(req, res) {
             res.statusCode = 409;
             res.end(JSON.stringify(error));
         } else {
-            console.log('Todo ${req.swagger.params.todo.value.todo_id} added to Elasticsearch');
+            console.log(`Todo ${req.swagger.params.todo.value.todo_id} added to Elasticsearch`);
+            monitor(start, 'AddTodo');
         }
     })
 }
